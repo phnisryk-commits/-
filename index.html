@@ -70,7 +70,7 @@
     <div id="start-page">
         <h1 style="font-size: 2.5em;">🌸</h1>
         <h1>Hanakotoba Quiz</h1>
-        <p>ตัวตนของคุณเปรียบได้กับดอกไม้ชนิดไหน?<br>มาค้นหาคำตอบผ่านภาษาดอกไม้ญี่ปุ่นกัน</p>
+        <p>ค้นหาดอกไม้ที่สะท้อนตัวตนของคุณ<br>ผ่านภาษาดอกไม้และวัฒนธรรมญี่ปุ่น</p>
         <button class="btn btn-main" onclick="startQuiz()">เริ่มทำแบบทดสอบ</button>
     </div>
 
@@ -85,7 +85,7 @@
         <h1 id="flower-name" style="margin-top: 0;">ชื่อดอกไม้</h1>
         <img id="flower-img" src="" alt="Flower result">
         <div class="result-info">
-            <p><strong>ความหมาย (Hanakotoba):</strong> <span id="flower-meaning"></span></p>
+            <p><strong>ความหมาย:</strong> <span id="flower-meaning"></span></p>
             <p><strong>เกร็ดน่ารู้:</strong> <span id="flower-note"></span></p>
         </div>
         <hr style="border: 0.5px solid #eee; margin: 20px 0;">
@@ -98,51 +98,51 @@
 <script>
     const flowers = {
         Sakura: { 
-            name: "ดอกซากุระ (Sakura)", 
-            meaning: "ความงามของจิตวิญญาณ และการเริ่มต้นใหม่ ", 
-            note: "ปรากฏอยู่บนธนบัตร 1,000 เยน และเหรียญ 100 เยน [cite: 9]", 
+            name: "ดอกซากุระ (Sakura, 桜)", 
+            meaning: "ความงามของจิตวิญญาณ, ความงามของสตรี และการเริ่มต้นใหม่", 
+            note: "ชื่อมาจากเทพธิดา 'โคโนะฮานะโนะซากุยะบิเมะ' และยังปรากฏอยู่บนธนบัตร 1,000 เยนด้วย", 
             img: "sakura.png", 
             video: "https://www.youtube.com/watch?v=halmrlPLJj0" 
         },
         Wisteria: { 
-            name: "วิสทีเรีย (Fuji)", 
-            meaning: "ใจดี, การต้อนรับ และ 'เมามายในความรักของคุณ' [cite: 13]", 
-            note: "เป็นดอกไม้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร ", 
+            name: "วิสทีเรีย (Wisteria / Fuji, 藤)", 
+            meaning: "เมามายในความรักของคุณ, ใจดี และการต้อนรับ", 
+            note: "ปรากฎอยู่ในนิยายตำนานเก็นจิ และเป็นดอกไม้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร", 
             img: "fuji.png", 
             video: "https://www.youtube.com/shorts/ny7mo7mBkMU" 
         },
         Nemophila: { 
-            name: "เนโมฟีล่า (Nemophila)", 
-            meaning: "ประสบความสำเร็จในทุกที่ และการให้อภัย [cite: 21]", 
-            note: "เป็นดอกไม้ประจำตัวของผู้กล้าฮิมเมลจากเรื่อง Sousou no Frieren [cite: 25]", 
+            name: "เนโมฟีล่า (Nemophila, ネモフィラ)", 
+            meaning: "ประสบความสำเร็จในทุกที่, ความละเอียดอ่อน และการให้อภัย", 
+            note: "เป็นสัญลักษณ์ของการไม่ยึดติดกับความงาม และเป็นดอกไม้ประจำตัวของฮิมเมลจากเรื่อง Frieren", 
             img: "nemophila.png", 
             video: "https://www.youtube.com/watch?v=nROfBlb4PIY" 
         },
         Nanohana: { 
-            name: "นาโนะฮานะ (Nanohana)", 
-            meaning: "ความสุขเล็ก ๆ, ความมีชีวิตชีวา และความมั่งคั่ง [cite: 29]", 
-            note: "ตัวคันจิ '菜' หมายถึงผัก เป็นดอกไม้ที่ทานได้ [cite: 33]", 
+            name: "นาโนะฮานะ (Nanohana, ナノハナ)", 
+            meaning: "ความสุขเล็ก ๆ, ความมีชีวิตชีวา และความมั่งคั่ง", 
+            note: "ตัวคันจิ '菜' หมายถึงผัก เป็นดอกไม้ที่นำไปประกอบอาหารหรือทำน้ำมันได้", 
             img: "nanohana.png", 
             video: "https://www.youtube.com/watch?v=A5USx5a2wio" 
         },
         Hydrangea: { 
-            name: "ไฮเดรนเยีย (Ajisai)", 
-            meaning: "ความกลมกลืน แต่แฝงด้วยความไม่แน่นอน [cite: 37]", 
-            note: "ระวังนะ! ดอกไม้นี้มีพิษทั้งต้น [cite: 41]", 
+            name: "ไฮเดรนเยีย (Hydrangea / Ajisai, アジไซ)", 
+            meaning: "ความกลมกลืน, ความไม่แน่นอน และความไม่เที่ยงแท้", 
+            note: "สีเปลี่ยนตามสภาพดิน สีน้ำเงินหมายถึงการขอโทษ แต่ต้องระวังเพราะมีพิษทั้งต้น", 
             img: "ajisai.png", 
             video: "https://www.youtube.com/shorts/P0JEqNPEut4" 
         },
         Gerbera: { 
-            name: "เยอบีร่า (Gerbera)", 
-            meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง [cite: 45]", 
-            note: "ในภาพยนตร์ Chainsaw Man เป็นดอกไม้ที่เด็นจิมอบให้เรเซ่ [cite: 49]", 
+            name: "เยอบีร่า (Gerbera, ガーべラ)", 
+            meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง", 
+            note: "ก้านดอกจะเติบโตโดยเงยหน้าขึ้นเสมอ ปรากฏใน Chainsaw Man: Reze Arc", 
             img: "gerbera.png", 
             video: "https://www.youtube.com/watch?v=ST6TwpFHl-Q" 
         },
         Tsubaki: { 
-            name: "สึบากิ (Camellia)", 
-            meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ ", 
-            note: "เวลาเหี่ยวส่วนหัวจะหักลงมา ทำให้สื่อถึงความพ่ายแพ้ ", 
+            name: "สึบากิ (Camellia, ツバキ)", 
+            meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ", 
+            note: "ปรากฏในวรรณกรรมตั้งแต่ปี ค.ศ. 759 ปัจจุบันเป็นส่วนประกอบยอดนิยมในเครื่องสำอางญี่ปุ่น", 
             img: "tsubaki.png", 
             video: "https://www.youtube.com/watch?v=g1p58FSvsRY" 
         }
@@ -150,12 +150,12 @@
 
     const questions = [
         { q: "เมื่อคุณตื่นมาในเช้าวันหยุด สิ่งแรกที่คุณอยากทำคือ?", options: [{t:"ออกไปเดินเล่นหาของอร่อย", s:["Nanohana", "Gerbera"]}, {t:"นั่งจิบชาอ่านหนังสือเงียบๆ", s:["Tsubaki", "Nemophila"]}, {t:"ไปในที่ที่ไม่เคยไป", s:["Sakura", "Gerbera"]}] },
-        { q: "นิยาม 'ความสวยงาม' แบบที่คุณชอบที่สุดคือ?", options: [{t:"ความสวยที่เรียบง่าย", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา", s:["Wisteria"]}] },
-        { q: "เมื่อเจออุปสรรค คุณมักจะรับมืออย่างไร?", options: [{t:"ให้อภัยตัวเองและผู้อื่น", s:["Nemophila", "Hydrangea"]}, {t:"มองหาความหวังและก้าวต่อ", s:["Gerbera", "Nanohana"]}, {t:"ยอมรับความเปลี่ยนแปลง", s:["Hydrangea", "Sakura"]}] },
-        { q: "ในงานสังสรรค์ คุณมักจะเป็นคนแบบไหน?", options: [{t:"คอยต้อนรับและดูแลผู้อื่น", s:["Wisteria", "Hydrangea"]}, {t:"เงียบๆ กับกลุ่มเพื่อนสนิท", s:["Tsubaki", "Nanohana"]}, {t:"สร้างพลังงานบวก", s:["Sakura", "Gerbera"]}] },
-        { q: "ถ้าเลือกของขวัญให้ตัวเองได้ 1 อย่าง?", options: [{t:"โอกาสในการเริ่มต้นใหม่", s:["Sakura", "Gerbera"]}, {t:"ความสุขจากสิ่งเล็กๆ", s:["Nanohana", "Nemophila"]}, {t:"ความรักและการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
-        { q: "เวลาที่มอง 'อนาคต' คุณมักจะนึกถึงอะไร?", options: [{t:"ความสำเร็จที่รออยู่", s:["Nemophila", "Gerbera"]}, {t:"การเติบโตแบบยั่งยืน", s:["Tsubaki", "Nanohana"]}, {t:"ความหวังที่ไม่สิ้นสุด", s:["Gerbera", "Sakura"]}] },
-        { q: "หากเปรียบชีวิตเป็น 'ฤดูกาล' คุณชอบช่วงไหน?", options: [{t:"ฤดูใบไม้ผลิ", s:["Sakura", "Nanohana", "Wisteria"]}, {t:"ฤดูฝน", s:["Hydrangea"]}, {t:"ฤดูหนาว", s:["Tsubaki"]}] }
+        { q: "นิยาม 'ความสวยงาม' แบบที่คุณชอบที่สุดคือ?", options: [{t:"ความสวยที่เรียบง่าย ไม่ต้องแต่งเติม", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา น่าหลงใหล", s:["Wisteria"]}] },
+        { q: "เมื่อเจออุปสรรค คุณมักจะรับมืออย่างไร?", options: [{t:"ให้อภัยตัวเองและผู้อื่น", s:["Nemophila", "Hydrangea"]}, {t:"มองหาความหวังและก้าวต่อ", s:["Gerbera", "Nanohana"]}, {t:"ยอมรับความเปลี่ยนแปลงของชีวิต", s:["Hydrangea", "Sakura"]}] },
+        { q: "ในงานสังสรรค์ คุณมักจะเป็นคนแบบไหน?", options: [{t:"คอยต้อนรับและดูแลผู้อื่น", s:["Wisteria", "Hydrangea"]}, {t:"เงียบๆ กับกลุ่มเพื่อนสนิท", s:["Tsubaki", "Nanohana"]}, {t:"สร้างพลังงานบวกและความสดใส", s:["Sakura", "Gerbera"]}] },
+        { q: "ถ้าเลือกของขวัญให้ตัวเองได้ 1 อย่าง?", options: [{t:"โอกาสในการเริ่มต้นใหม่", s:["Sakura", "Gerbera"]}, {t:"ความสุขจากสิ่งเล็กๆ รอบตัว", s:["Nanohana", "Nemophila"]}, {t:"ความรักและการได้รับการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
+        { q: "เวลาที่มอง 'อนาคต' คุณมักจะนึกถึงอะไร?", options: [{t:"ความสำเร็จที่รออยู่ในทุกที่", s:["Nemophila", "Gerbera"]}, {t:"การเติบโตแบบเรียบง่ายและยั่งยืน", s:["Tsubaki", "Nanohana"]}, {t:"ความหวังที่ไม่สิ้นสุด", s:["Gerbera", "Sakura"]}] },
+        { q: "หากเปรียบชีวิตเป็น 'ฤดูกาล' คุณชอบช่วงไหน?", options: [{t:"ฤดูใบไม้ผลิ: การเริ่มต้น", s:["Sakura", "Nanohana", "Wisteria"]}, {t:"ฤดูฝน: ความเย็นฉ่ำ", s:["Hydrangea"]}, {t:"ฤดูหนาว: ความสงบนิ่ง", s:["Tsubaki"]}] }
     ];
 
     let currentStep = 0;
