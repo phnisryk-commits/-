@@ -2,173 +2,205 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hanakotoba Quiz | ค้นหาดอกไม้ประจำตัว</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;500&family=Noto+Sans+Thai:wght@300;500&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Spring Hanami Quiz | ค้นหาดอกไม้ในใจคุณ</title>
     <style>
         :root {
-            --bg-color: #faf8f5; /* สีขาวนวลแบบกระดาษญี่ปุ่น */
-            --text-color: #5d504a; /* สีน้ำตาลหม่นธรรมชาติ */
-            --accent-color: #8e7d77;
-            --accent-hover: #f4ece8;
-            --font-main: 'Noto Sans Thai', 'Helvetica Neue', sans-serif;
-            --font-jp: 'Noto Serif JP', serif;
+            --sky-blue: #e0f7fa; /* สีฟ้าอ่อนท้องฟ้าฤดูใบไม้ผลิ */
+            --sakura-pink: #ffebee; /* สีชมพูอ่อนกลีบซากุระ */
+            --text-color: #4e443f; /* สีน้ำตาลเข้มธรรมชาติ */
+            --accent-color: #d7ccc8; /* สีน้ำตาลอ่อนหม่น */
+            --card-bg: rgba(255, 255, 255, 0.9); /* สีขาวโปร่งแสง */
+            --primary-btn: #a1887f; /* สีน้ำตาลอมชมพู */
         }
+
         body {
-            font-family: var(--font-main);
-            background-color: var(--bg-color);
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--sky-blue);
+            background-image: linear-gradient(180deg, var(--sky-blue) 0%, var(--sakura-pink) 100%);
             color: var(--text-color);
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
+            overflow-x: hidden; /* ป้องกันสกอลบาร์แนวนอน */
         }
-        #quiz-container {
-            max-width: 500px;
+
+        /* --- CSS Animation กลีบซากุระร่วง --- */
+        .cherry-blossom-container {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            background-color: #ffc0cb;
+            border-radius: 150px 10px 150px 10px;
+            opacity: 0.8;
+            animation: fadeout 5s infinite, fall 10s infinite;
+        }
+
+        @keyframes fadeout { 
+            0%, 100% { opacity: 0; } 
+            50% { opacity: 0.8; } 
+        }
+
+        @keyframes fall {
+            0% { top: -10%; transform: translateX(0px) rotate(0deg); }
+            100% { top: 110%; transform: translateX(100px) rotate(360deg); }
+        }
+
+        /* สร้างกลีบดอกไม้หลายๆ ขนาดและเวลาการตกที่ต่างกัน */
+        .petal:nth-child(1) { width: 10px; height: 10px; left: 10%; animation-delay: 0s; }
+        .petal:nth-child(2) { width: 15px; height: 15px; left: 20%; animation-delay: 2s; }
+        .petal:nth-child(3) { width: 8px; height: 8px; left: 35%; animation-delay: 4s; }
+        .petal:nth-child(4) { width: 12px; height: 12px; left: 50%; animation-delay: 1s; }
+        .petal:nth-child(5) { width: 18px; height: 18px; left: 65%; animation-delay: 3s; }
+        .petal:nth-child(6) { width: 10px; height: 10px; left: 80%; animation-delay: 5s; }
+        .petal:nth-child(7) { width: 14px; height: 14px; left: 90%; animation-delay: 2.5s; }
+
+        /* --- Main Container --- */
+        #quiz-container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 90%; /* เต็มหน้าจอมือถือ */
+            width: 400px;
             text-align: center;
-            padding: 40px;
+            position: relative;
+            z-index: 1; /* อยู่เหนือกลีบดอกไม้ */
+            margin: 20px;
         }
-        h1, h2 {
-            font-family: var(--font-jp);
-            font-weight: 300;
-            margin-bottom: 30px;
-        }
+
+        /* --- Element Styles --- */
+        h1 { font-size: 2em; margin-top: 10px; font-weight: 500;}
+        h3 { font-size: 1.2em; line-height: 1.4; font-weight: 300;}
+        p { font-size: 1em; line-height: 1.6; }
+
         .btn {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            background: transparent;
+            padding: 18px; /* ขนาดปุ่มใหญ่ขึ้นสำหรับมือถือ */
+            margin: 15px 0;
+            border: 2px solid var(--accent-color);
+            background: white;
             color: var(--text-color);
-            border-radius: 20px;
+            border-radius: 50px; /* ขอบมน */
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 16px;
-            font-weight: 300;
+            font-weight: 500;
+            box-sizing: border-box; /* ป้องกันปุ่มเลยขอบ */
+        }
+
+        .btn:hover {
+            background: #faf8f6;
+            transform: translateY(-2px);
+            border-color: #bcaaa4;
+        }
+
+        .btn-main {
+            background: var(--primary-btn);
+            color: white;
             border: none;
         }
-        .btn:hover {
-            background-color: var(--accent-hover);
-        }
-        .btn-main {
-            background-color: transparent;
-            color: var(--accent-color);
-            font-weight: 500;
-        }
+
         .btn-main:hover {
-            background-color: var(--accent-hover);
-            color: var(--accent-color);
+            background: #8d6e63;
         }
-        img { max-width: 100%; border-radius: 15px; margin: 20px 0; }
-        .flower-circle {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 20px; 
+            margin: 20px 0; 
+            border: 5px solid #fff; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+
         .hidden { display: none; }
-        .result-info { text-align: left; background: transparent; padding: 20px 0; line-height: 1.8; font-weight: 300; }
-        .progress { font-size: 12px; color: #a0908a; margin-bottom: 20px; font-weight: 300; }
-        .ornament { font-size: 2em; color: var(--accent-color); margin-bottom: 20px; }
+        
+        .result-info { 
+            text-align: left; 
+            background: rgba(250, 248, 246, 0.8); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin: 20px 0; 
+            font-size: 14px;
+        }
+        
+        .progress { font-size: 12px; color: #a1887f; margin-bottom: 15px; }
+        
+        hr { border: 0.5px solid #f1e0db; margin: 25px 0; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<div class="cherry-blossom-container">
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+    <div class="petal"></div>
+</div>
+
 <div id="quiz-container">
     <div id="start-page">
-        <div class="ornament">🌸</div>
+        <h1 style="font-size: 3em; margin-bottom: 0;">🌸</h1>
         <h1>Hanakotoba Quiz</h1>
-        <p style="font-weight: 300;">ค้นหาดอกไม้ที่สะท้อนตัวตนของคุณ<br>ผ่านภาษาดอกไม้และวัฒนธรรมญี่ปุ่น</p>
-        <button class="btn btn-main" onclick="startQuiz()">เริ่มทำแบบทดสอบ</button>
+        <p>ฤดูใบไม้ผลิมาถึงแล้ว...<br>มาค้นหาดอกไม้ที่สะท้อนตัวตนของคุณกัน</p>
+        <button class="btn btn-main" onclick="startQuiz()">เริ่มการเดินทาง</button>
     </div>
 
     <div id="question-page" class="hidden">
-        <div class="ornament">🌿</div>
         <div class="progress" id="progress-text">คำถามที่ 1 จาก 7</div>
-        <h3 id="question-text" style="font-weight: 500; margin-bottom: 30px;">...</h3>
+        <h3 id="question-text">...</h3>
         <div id="options-container"></div>
     </div>
 
     <div id="result-page" class="hidden">
-        <div class="ornament">🎋</div>
-        <p style="margin-bottom: 5px; color: #8e7d77; font-weight: 300;">ผลลัพธ์ของคุณคือ</p>
+        <p style="margin-bottom: 5px; color: #a1887f;">ดอกไม้ประจำใจคุณคือ</p>
         <h1 id="flower-name" style="margin-top: 0;">ชื่อดอกไม้</h1>
-        <img id="flower-img" src="" alt="Flower result" class="flower-circle">
+        <img id="flower-img" src="" alt="Flower result">
         <div class="result-info">
             <p><strong>ความหมาย:</strong> <span id="flower-meaning"></span></p>
             <p><strong>เกร็ดน่ารู้:</strong> <span id="flower-note"></span></p>
         </div>
-        <hr style="border: 0; border-top: 1px solid #f4ece8; margin: 20px 0;">
-        <h3 style="font-weight: 500;">ลองพับดอกไม้ของคุณดูไหม? ✨</h3>
-        <a id="flower-video" href="#" target="_blank" class="btn btn-main" style="text-decoration: none;">วิดีโอสอนพับกระดาษ (Origami)</a>
-        <button class="btn" onclick="location.reload()" style="font-size: 14px; color: #a0908a;">เริ่มใหม่</button>
+        <hr>
+        <h3 style="font-weight: 500; font-size: 1.1em;">ลองพับดอกไม้ของคุณดูไหม? ✨</h3>
+        <a id="flower-video" href="#" target="_blank" class="btn btn-main" style="text-decoration: none;">ดูวิธีพับกระดาษ (Origami)</a>
+        <button class="btn" onclick="location.reload()" style="font-size: 14px; border: none; color: #a1887f; background: none;">ทำแบบทดสอบใหม่</button>
     </div>
 </div>
 
 <script>
     const flowers = {
-        Sakura: { 
-            name: "ดอกซากุระ (Sakura, 桜)", 
-            meaning: "ความงามของจิตวิญญาณ, ความงามของสตรี และการเริ่มต้นใหม่", 
-            note: "เป็นดอกไม้ประจำชาติญี่ปุ่น ชื่อมาจากเทพธิดาซากุยะ และยังปรากฏบนธนบัตร 1,000 เยนกับเหรียญ 100 เยนด้วย", 
-            img: "sakura.png", 
-            video: "https://www.youtube.com/watch?v=halmrlPLJj0" 
-        },
-        Wisteria: { 
-            name: "วิสทีเรีย (Wisteria / Fuji, 藤)", 
-            meaning: "เมามายในความรักของคุณ, ใจดี และการต้อนรับ", 
-            note: "ปรากฎอยู่ในตำนานเก่าแก่ของญี่ปุ่นอย่าง 'ตำนานเก็นจิ' และเป็นดอกไม้ที่ใช้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร", 
-            img: "fuji.png", 
-            video: "https://www.youtube.com/shorts/ny7mo7mBkMU" 
-        },
-        Nemophila: { 
-            name: "เนโมฟีล่า (Nemophila, ネモフィラ)", 
-            meaning: "ประสบความสำเร็จในทุกที่, ความละเอียดอ่อน และการให้อภัย", 
-            note: "สัญลักษณ์ของการไม่ยึดติดกับความงาม และเป็นดอกไม้ประจำตัวของผู้กล้าฮิมเมลจากเรื่อง Sousou no Frieren", 
-            img: "nemophila.png", 
-            video: "https://www.youtube.com/watch?v=nROfBlb4PIY" 
-        },
-        Nanohana: { 
-            name: "นาโนะฮานะ (Nanohana, ナノハナ)", 
-            meaning: "ความสุขเล็ก ๆ, ความมีชีวิตชีวา และความมั่งคั่ง", 
-            note: "ชื่อมีความหมายตรงตัวว่า 'ดอกไม้ผัก' เพราะนิยมนำไปประกอบอาหารหรือทำน้ำมัน", 
-            img: "nanohana.png", 
-            video: "https://www.youtube.com/watch?v=A5USx5a2wio" 
-        },
-        Hydrangea: { 
-            name: "ไฮเดรนเยีย (Hydrangea / Ajisai, アジサイ)", 
-            meaning: "ความกลมกลืน, ความไม่แน่นอน และความไม่เที่ยงแท้", 
-            note: "สีของดอกเปลี่ยนตามสภาพดิน สีน้ำเงินหมายถึงการขอโทษ แต่ต้องระวังเพราะมีพิษทั้งต้น", 
-            img: "ajisai.png", 
-            video: "https://www.youtube.com/shorts/P0JEqNPEut4" 
-        },
-        Gerbera: { 
-            name: "เยอบีร่า (Gerbera, ガーべラ)", 
-            meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง", 
-            note: "ก้านดอกจะเติบโตโดยเงยหน้าขึ้นเสมอ เป็นดอกไม้ที่เด็นจิมอบให้เรเซ่ใน Chainsaw Man", 
-            img: "gerbera.png", 
-            video: "https://www.youtube.com/watch?v=ST6TwpFHl-Q" 
-        },
-        Tsubaki: { 
-            name: "สึบากิ (Camellia, ツバキ)", 
-            meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ", 
-            note: "ปรากฏในวรรณกรรมญี่ปุ่นมานานกว่าพันปี ปัจจุบันเป็นส่วนประกอบยอดนิยมในเครื่องสำอางญี่ปุ่น", 
-            img: "tsubaki.png", 
-            video: "https://www.youtube.com/watch?v=g1p58FSvsRY" 
-        }
+        Sakura: { name: "ดอกซากุระ (Sakura)", meaning: "ความงามของจิตวิญญาณ การเริ่มต้นใหม่", note: "เป็นดอกไม้ประจำชาติญี่ปุ่น ชื่อมาจากเทพธิดาซากุยะ และยังปรากฏบนธนบัตร 1,000 เยนกับเหรียญ 100 เยนด้วย", img: "sakura.png", video: "https://www.youtube.com/watch?v=halmrlPLJj0" },
+        Wisteria: { name: "วิสทีเรีย (Wisteria / Fuji)", meaning: "เมามายในความรักของคุณ ใจดี และการต้อนรับ", note: "ปรากฎอยู่ในตำนานเก่าแก่ของญี่ปุ่นอย่าง 'ตำนานเก็นจิ' และเป็นดอกไม้ที่ใช้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร", img: "fuji.png", video: "https://www.youtube.com/shorts/ny7mo7mBkMU" },
+        Nemophila: { name: "เนโมฟีล่า (Nemophila)", meaning: "ประสบความสำเร็จในทุกที่ ความละเอียดอ่อน และการให้อภัย", note: "สัญลักษณ์ของการไม่ยึดติดกับความงาม และเป็นดอกไม้ประจำตัวของผู้กล้าฮิมเมลจากเรื่อง Sousou no Frieren", img: "nemophila.png", video: "https://www.youtube.com/watch?v=nROfBlb4PIY" },
+        Nanohana: { name: "นาโนะฮานะ (Nanohana)", meaning: "ความสุขเล็ก ๆ ความมีชีวิตชีวา และความมั่งคั่ง", note: "ชื่อมีความหมายตรงตัวว่า 'ดอกไม้ผัก' เพราะนิยมนำไปประกอบอาหารหรือทำน้ำมัน", img: "nanohana.png", video: "https://www.youtube.com/watch?v=A5USx5a2wio" },
+        Hydrangea: { name: "ไฮเดรนเยีย (Hydrangea / Ajisai)", meaning: "ความกลมกลืน ความไม่แน่นอน และความไม่เที่ยงแท้", note: "สีของดอกเปลี่ยนตามสภาพดิน สีน้ำเงินหมายถึงการขอโทษ แต่ต้องระวังเพราะมีพิษทั้งต้น", img: "ajisai.png", video: "https://www.youtube.com/shorts/P0JEqNPEut4" },
+        Gerbera: { name: "เยอบีร่า (Gerbera)", meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง", note: "ก้านดอกจะเติบโตโดยเงยหน้าขึ้นเสมอ เป็นดอกไม้ที่เด็นจิมอบให้เรเซ่ใน Chainsaw Man", img: "gerbera.png", video: "https://www.youtube.com/watch?v=ST6TwpFHl-Q" },
+        Tsubaki: { name: "สึบากิ (Camellia)", meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ", note: "ปรากฏในวรรณกรรมญี่ปุ่นมานานกว่าพันปี ปัจจุบันเป็นส่วนประกอบยอดนิยมในเครื่องสำอางญี่ปุ่น", img: "tsubaki.png", video: "https://www.youtube.com/watch?v=g1p58FSvsRY" }
     };
 
     const questions = [
-        { q: "เมื่อตื่นมาในเช้าวันหยุด คุณอยากทำอะไรที่สุด?", options: [{t:"ออกไปเดินเล่นหาของอร่อย", s:["Nanohana", "Gerbera"]}, {t:"นั่งจิบชาเงียบๆ อ่านหนังสือเล่มโปรด", s:["Tsubaki", "Nemophila"]}, {t:"เตรียมตัวออกไปทำกิจกรรมใหม่ๆ", s:["Sakura", "Gerbera"]}] },
-        { q: "นิยาม 'ความสวยงาม' แบบที่คุณชอบที่สุดคือ?", options: [{t:"ความสวยที่เรียบง่าย ไม่ต้องแต่งเติม", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา น่าหลงใหล", s:["Wisteria"]}] },
+        { q: "เมื่อคุณตื่นมาในเช้าวันหยุด สิ่งแรกที่คุณอยากทำคือ?", options: [{t:"ออกไปเดินเล่นหาของอร่อย", s:["Nanohana", "Gerbera"]}, {t:"นั่งจิบชาอ่านหนังสือเงียบๆ", s:["Tsubaki", "Nemophila"]}, {t:"ไปในที่ที่ไม่เคยไป", s:["Sakura", "Gerbera"]}] },
+        { q: "นิยาม 'ความสวยงาม' แบบที่คุณชอบที่สุดคือ?", options: [{t:"ความสวยที่เรียบง่าย ไม่ไม่ต้องแต่งเติม", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา น่าหลงใหล", s:["Wisteria"]}] },
         { q: "เมื่อเจออุปสรรค คุณมักจะรับมืออย่างไร?", options: [{t:"ให้อภัยตัวเองและผู้อื่น", s:["Nemophila", "Hydrangea"]}, {t:"มองหาความหวังและก้าวต่อ", s:["Gerbera", "Nanohana"]}, {t:"ยอมรับความเปลี่ยนแปลงของชีวิต", s:["Hydrangea", "Sakura"]}] },
         { q: "ในงานสังสรรค์ คุณมักจะเป็นคนแบบไหน?", options: [{t:"คอยต้อนรับและดูแลผู้อื่น", s:["Wisteria", "Hydrangea"]}, {t:"เงียบๆ กับกลุ่มเพื่อนสนิท", s:["Tsubaki", "Nanohana"]}, {t:"สร้างพลังงานบวกและความสดใส", s:["Sakura", "Gerbera"]}] },
-        { q: "ถ้าเลือกของขวัญให้ตัวเองได้ 1 อย่าง?", options: [{t:"โอกาสในการเริ่มต้นใหม่", s:["Sakura", "Gerbera"]}, {t:"ความสุขจากสิ่งเล็กๆ รอบตัว", s:["Nanohana", "Nemophila"]}, {t:"ความรักและการได้รับการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
+        { q: "ถ้าเลือกของขวัญให้ตัวเองได้ 1 อย่าง?", options: [{t:"โอกาสในการเริ่มต้นสิ่งใหม่", s:["Sakura", "Gerbera"]}, {t:"ความสุขจากสิ่งเล็กๆ รอบตัว", s:["Nanohana", "Nemophila"]}, {t:"ความรักและการได้รับการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
         { q: "เวลาที่มอง 'อนาคต' คุณมักจะนึกถึงอะไร?", options: [{t:"ความสำเร็จที่รออยู่ในทุกที่", s:["Nemophila", "Gerbera"]}, {t:"การเติบโตแบบเรียบง่ายและยั่งยืน", s:["Tsubaki", "Nanohana"]}, {t:"ความหวังที่ไม่สิ้นสุด", s:["Gerbera", "Sakura"]}] },
         { q: "หากเปรียบชีวิตเป็น 'ฤดูกาล' คุณชอบช่วงไหน?", options: [{t:"ฤดูใบไม้ผลิ: การเริ่มต้น", s:["Sakura", "Nanohana", "Wisteria"]}, {t:"ฤดูฝน: ความเย็นฉ่ำ", s:["Hydrangea"]}, {t:"ฤดูหนาว: ความสงบนิ่ง", s:["Tsubaki"]}] }
     ];
