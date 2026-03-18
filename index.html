@@ -4,195 +4,306 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hanakotoba Quiz | ค้นหาดอกไม้ประจำตัว</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fdfaf7;
-            --text-color: #5d504a;
-            --accent-color: #d3c4be;
-            --card-bg: #ffffff;
-            --primary-btn: #8e7d77;
+            --primary: #33a474; /* สีเขียวคล้าย 16personalities แต่ปรับให้อ่อนโยนแบบดอกไม้ */
+            --bg-body: #f0f3f5;
+            --text-main: #333333;
+            --text-muted: #586376;
+            --white: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         body {
             font-family: 'Sarabun', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 800px;
             padding: 20px;
         }
-        #quiz-container {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            max-width: 550px;
-            width: 100%;
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 60px 40px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             text-align: center;
+            opacity: 1;
+            transform: translateY(0);
+            transition: var(--transition);
         }
-        .btn {
-            display: block;
+
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        /* Progress Bar */
+        .progress-container {
             width: 100%;
-            padding: 14px;
-            margin: 12px 0;
-            border: 1px solid var(--accent-color);
-            background: white;
-            color: var(--text-color);
-            border-radius: 30px;
+            height: 8px;
+            background: #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Typography */
+        h1 { font-weight: 600; font-size: 2.2rem; margin-bottom: 20px; }
+        p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+        /* Options */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .option-btn {
+            background: #f8fafb;
+            border: 2px solid #e1e8ed;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 16px;
+            transition: var(--transition);
+            text-align: center;
+            font-weight: 400;
+            color: var(--text-main);
         }
-        .btn:hover {
-            background: #f4ece8;
-            transform: translateY(-2px);
+
+        .option-btn:hover {
+            border-color: var(--primary);
+            background: #f0f9f5;
+            color: var(--primary);
         }
-        .btn-main {
-            background: var(--primary-btn);
+
+        /* Result Page */
+        .result-header { margin-bottom: 30px; }
+        .result-img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 8px solid #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #eef9f4;
+            color: var(--primary);
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            text-align: left;
+            background: #f8fafb;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .action-btn {
+            background: var(--primary);
             color: white;
             border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: var(--transition);
         }
-        .btn-main:hover {
-            background: #7a6a64;
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(51, 164, 116, 0.3);
         }
-        img { max-width: 100%; border-radius: 15px; margin: 20px 0; border: 2px solid #eee; }
+
         .hidden { display: none; }
-        .result-info { text-align: left; background: #faf8f6; padding: 20px; border-radius: 10px; margin: 20px 0; line-height: 1.6; }
-        .progress { font-size: 12px; color: #a0908a; margin-bottom: 10px; }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="quiz-container">
-    <div id="start-page">
-        <h1 style="font-size: 2.5em;">🌸</h1>
-        <h1>Hanakotoba Quiz</h1>
-        <p>ค้นหาดอกไม้ที่สะท้อนตัวตนของคุณ<br>ผ่านภาษาดอกไม้และวัฒนธรรมญี่ปุ่น</p>
-        <button class="btn btn-main" onclick="startQuiz()">เริ่มทำแบบทดสอบ</button>
+<div id="app-container">
+    <div id="intro-card" class="card">
+        <h1 style="color: var(--primary);">ค้นหาตัวตนของคุณ</h1>
+        <p>ใช้เวลาไม่เกิน 2 นาที เพื่อค้นหาว่า "ดอกไม้ญี่ปุ่น" ชนิดไหนที่ซ่อนอยู่ในใจคุณ</p>
+        <button class="action-btn" style="margin-top: 30px;" onclick="startQuiz()">เริ่มทำแบบทดสอบ</button>
     </div>
 
-    <div id="question-page" class="hidden">
-        <div class="progress" id="progress-text">คำถามที่ 1 จาก 7</div>
-        <h3 id="question-text" style="margin-bottom: 25px;">...</h3>
-        <div id="options-container"></div>
-    </div>
-
-    <div id="result-page" class="hidden">
-        <p style="margin-bottom: 5px; color: #8e7d77;">ผลลัพธ์ของคุณคือ</p>
-        <h1 id="flower-name" style="margin-top: 0;">ชื่อดอกไม้</h1>
-        <img id="flower-img" src="" alt="Flower result">
-        <div class="result-info">
-            <p><strong>ความหมาย:</strong> <span id="flower-meaning"></span></p>
-            <p><strong>เกร็ดน่ารู้:</strong> <span id="flower-note"></span></p>
+    <div id="quiz-card" class="card hidden">
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
         </div>
-        <hr style="border: 0.5px solid #eee; margin: 20px 0;">
-        <h3 style="font-weight: 500;">ลองพับดอกไม้ของคุณดูไหม? ✨</h3>
-        <a id="flower-video" href="#" target="_blank" class="btn btn-main" style="text-decoration: none;">วิดีโอสอนพับกระดาษ (Origami)</a>
-        <button class="btn" onclick="location.reload()" style="font-size: 14px; border: none; color: #a0908a;">เริ่มใหม่</button>
+        <p id="step-counter" style="font-weight: 600; color: var(--primary); margin-bottom: 10px;"></p>
+        <h2 id="question-text">...</h2>
+        <div id="options-container" class="options-list"></div>
+    </div>
+
+    <div id="result-card" class="card hidden">
+        <div class="result-header">
+            <div class="badge">ผลลัพธ์ของคุณคือ</div>
+            <h1 id="flower-name" style="margin-top: 10px;">...</h1>
+            <img id="flower-img" src="" class="result-img" alt="Result">
+        </div>
+        <div class="info-box">
+            <p><strong>ความหมาย:</strong> <span id="flower-meaning"></span></p>
+            <p style="margin-top: 15px;"><strong>เกร็ดน่ารู้:</strong> <span id="flower-note"></span></p>
+        </div>
+        <a id="flower-video" href="#" target="_blank" class="action-btn">วิดีโอสอนพับกระดาษ (Origami)</a>
+        <div style="margin-top: 25px;">
+            <button onclick="location.reload()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; text-decoration:underline;">ทำแบบทดสอบอีกครั้ง</button>
+        </div>
     </div>
 </div>
 
 <script>
     const flowers = {
         Sakura: { 
-            name: "ดอกซากุระ (Sakura, 桜)", 
-            meaning: "ความงามของจิตวิญญาณ, ความงามของสตรี และการเริ่มต้นใหม่", 
-            note: "ชื่อมาจากเทพธิดา 'โคโนะฮานะโนะซากุยะบิเมะ' และยังปรากฏอยู่บนธนบัตร 1,000 เยนด้วย", 
+            name: "ซากุระ (Sakura)", 
+            meaning: "ความงามของจิตวิญญาณ, ความงามของสตรี และการเริ่มต้นใหม่ ", 
+            note: "ชื่อมาจากเทพธิดา 'โคโนะฮานะโนะซากุยะบิเมะ' และปรากฏอยู่บนธนบัตร 1,000 เยน [cite: 5, 9]", 
             img: "sakura.png", 
             video: "https://www.youtube.com/watch?v=halmrlPLJj0" 
         },
         Wisteria: { 
-            name: "วิสทีเรีย (Wisteria / Fuji, 藤)", 
-            meaning: "เมามายในความรักของคุณ, ใจดี และการต้อนรับ", 
-            note: "ปรากฎอยู่ในนิยายตำนานเก็นจิ และเป็นดอกไม้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร", 
+            name: "วิสทีเรีย (Wisteria / Fuji)", 
+            meaning: "เมามายในความรักของคุณ, ใจดี และการต้อนรับ ", 
+            note: "ปรากฎอยู่ในนิยายตำนานเก็นจิ และใช้ขับไล่อสูรในเรื่องดาบพิฆาตอสูร [cite: 13, 17]", 
             img: "fuji.png", 
             video: "https://www.youtube.com/shorts/ny7mo7mBkMU" 
         },
         Nemophila: { 
-            name: "เนโมฟีล่า (Nemophila, ネモフィラ)", 
-            meaning: "ประสบความสำเร็จในทุกที่, ความละเอียดอ่อน และการให้อภัย", 
-            note: "เป็นสัญลักษณ์ของการไม่ยึดติดกับความงาม และเป็นดอกไม้ประจำตัวของฮิมเมลจากเรื่อง Frieren", 
+            name: "เนโมฟีล่า (Nemophila)", 
+            meaning: "ประสบความสำเร็จในทุกที่, ความละเอียดอ่อน และการให้อภัย ", 
+            note: "สัญลักษณ์ของการไม่ยึดติดกับความงาม และเป็นดอกไม้ของผู้กล้าฮิมเมลจากเรื่อง Frieren [cite: 21, 25]", 
             img: "nemophila.png", 
             video: "https://www.youtube.com/watch?v=nROfBlb4PIY" 
         },
         Nanohana: { 
-            name: "นาโนะฮานะ (Nanohana, ナノハナ)", 
-            meaning: "ความสุขเล็ก ๆ, ความมีชีวิตชีวา และความมั่งคั่ง", 
-            note: "ตัวคันจิ '菜' หมายถึงผัก เป็นดอกไม้ที่นำไปประกอบอาหารหรือทำน้ำมันได้", 
+            name: "นาโนะฮานะ (Nanohana)", 
+            meaning: "ความสุขเล็ก ๆ, ความมีชีวิตชีวา และความมั่งคั่ง ", 
+            note: "ชื่อแปลว่า 'ดอกไม้ผัก' สามารถนำไปทานหรือทำน้ำมันได้ [cite: 29, 33]", 
             img: "nanohana.png", 
             video: "https://www.youtube.com/watch?v=A5USx5a2wio" 
         },
         Hydrangea: { 
-            name: "ไฮเดรนเยีย (Hydrangea / Ajisai, アジไซ)", 
-            meaning: "ความกลมกลืน, ความไม่แน่นอน และความไม่เที่ยงแท้", 
-            note: "สีเปลี่ยนตามสภาพดิน สีน้ำเงินหมายถึงการขอโทษ แต่ต้องระวังเพราะมีพิษทั้งต้น", 
+            name: "ไฮเดรนเยีย (Ajisai)", 
+            meaning: "ความกลมกลืน, ความไม่แน่นอน และความไม่เที่ยงแท้ ", 
+            note: "สีเปลี่ยนตามค่ากรดด่างของดิน และมีพิษระคายเคืองทั้งต้น [cite: 37, 41]", 
             img: "ajisai.png", 
             video: "https://www.youtube.com/shorts/P0JEqNPEut4" 
         },
         Gerbera: { 
-            name: "เยอบีร่า (Gerbera, ガーべラ)", 
-            meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง", 
-            note: "ก้านดอกจะเติบโตโดยเงยหน้าขึ้นเสมอ ปรากฏใน Chainsaw Man: Reze Arc", 
+            name: "เยอบีร่า (Gerbera)", 
+            meaning: "ก้าวไปข้างหน้าอยู่เสมอ และความหวัง ", 
+            note: "ก้านดอกจะเงยหน้าขึ้นเสมอ ปรากฏใน Chainsaw Man: Reze Arc [cite: 45, 49]", 
             img: "gerbera.png", 
             video: "https://www.youtube.com/watch?v=ST6TwpFHl-Q" 
         },
         Tsubaki: { 
-            name: "สึบากิ (Camellia, ツバキ)", 
-            meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ", 
-            note: "ปรากฏในวรรณกรรมตั้งแต่ปี ค.ศ. 759 ปัจจุบันเป็นส่วนประกอบยอดนิยมในเครื่องสำอางญี่ปุ่น", 
+            name: "สึบากิ (Camellia)", 
+            meaning: "ความงดงามที่เรียบง่าย และความสมบูรณ์แบบ ", 
+            note: "ปรากฏในวรรณกรรมตั้งแต่ปี 759 เวลาเหี่ยวส่วนหัวจะหักลงมาทั้งดอก ", 
             img: "tsubaki.png", 
             video: "https://www.youtube.com/watch?v=g1p58FSvsRY" 
         }
     };
 
     const questions = [
-        { q: "เมื่อคุณตื่นมาในเช้าวันหยุด สิ่งแรกที่คุณอยากทำคือ?", options: [{t:"ออกไปเดินเล่นหาของอร่อย", s:["Nanohana", "Gerbera"]}, {t:"นั่งจิบชาอ่านหนังสือเงียบๆ", s:["Tsubaki", "Nemophila"]}, {t:"ไปในที่ที่ไม่เคยไป", s:["Sakura", "Gerbera"]}] },
-        { q: "นิยาม 'ความสวยงาม' แบบที่คุณชอบที่สุดคือ?", options: [{t:"ความสวยที่เรียบง่าย ไม่ต้องแต่งเติม", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา น่าหลงใหล", s:["Wisteria"]}] },
-        { q: "เมื่อเจออุปสรรค คุณมักจะรับมืออย่างไร?", options: [{t:"ให้อภัยตัวเองและผู้อื่น", s:["Nemophila", "Hydrangea"]}, {t:"มองหาความหวังและก้าวต่อ", s:["Gerbera", "Nanohana"]}, {t:"ยอมรับความเปลี่ยนแปลงของชีวิต", s:["Hydrangea", "Sakura"]}] },
-        { q: "ในงานสังสรรค์ คุณมักจะเป็นคนแบบไหน?", options: [{t:"คอยต้อนรับและดูแลผู้อื่น", s:["Wisteria", "Hydrangea"]}, {t:"เงียบๆ กับกลุ่มเพื่อนสนิท", s:["Tsubaki", "Nanohana"]}, {t:"สร้างพลังงานบวกและความสดใส", s:["Sakura", "Gerbera"]}] },
-        { q: "ถ้าเลือกของขวัญให้ตัวเองได้ 1 อย่าง?", options: [{t:"โอกาสในการเริ่มต้นใหม่", s:["Sakura", "Gerbera"]}, {t:"ความสุขจากสิ่งเล็กๆ รอบตัว", s:["Nanohana", "Nemophila"]}, {t:"ความรักและการได้รับการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
-        { q: "เวลาที่มอง 'อนาคต' คุณมักจะนึกถึงอะไร?", options: [{t:"ความสำเร็จที่รออยู่ในทุกที่", s:["Nemophila", "Gerbera"]}, {t:"การเติบโตแบบเรียบง่ายและยั่งยืน", s:["Tsubaki", "Nanohana"]}, {t:"ความหวังที่ไม่สิ้นสุด", s:["Gerbera", "Sakura"]}] },
-        { q: "หากเปรียบชีวิตเป็น 'ฤดูกาล' คุณชอบช่วงไหน?", options: [{t:"ฤดูใบไม้ผลิ: การเริ่มต้น", s:["Sakura", "Nanohana", "Wisteria"]}, {t:"ฤดูฝน: ความเย็นฉ่ำ", s:["Hydrangea"]}, {t:"ฤดูหนาว: ความสงบนิ่ง", s:["Tsubaki"]}] }
+        { q: "เมื่อคุณตื่นมาในเช้าวันหยุดที่อากาศสดใส สิ่งแรกที่คุณอยากทำคือ?", options: [{t:"ออกไปเดินเล่นหาของอร่อยทาน", s:["Nanohana", "Gerbera"]}, {t:"นั่งจิบชาอ่านหนังสือเงียบๆ", s:["Tsubaki", "Nemophila"]}, {t:"เตรียมตัวไปลองทำกิจกรรมใหม่ๆ", s:["Sakura", "Gerbera"]}] },
+        { q: "นิยาม 'ความสวยงาม' ในแบบที่คุณชอบที่สุดคือ?", options: [{t:"ความงามที่เรียบง่าย ไม่ต้องแต่งเติม", s:["Tsubaki", "Nemophila"]}, {t:"ความงามที่มีความหมายลึกซึ้ง", s:["Sakura", "Hydrangea"]}, {t:"ความงามที่หรูหรา น่าหลงใหล", s:["Wisteria"]}] },
+        { q: "เมื่อคุณเจออุปสรรค คุณมักจะรับมืออย่างไร?", options: [{t:"ให้อภัยตัวเองและมองเป็นบทเรียน", s:["Nemophila", "Hydrangea"]}, {t:"มองหาความหวังและผลักดันตัวเองต่อ", s:["Gerbera", "Nanohana"]}, {t:"ยอมรับว่าทุกอย่างมีการเปลี่ยนแปลง", s:["Hydrangea", "Sakura"]}] },
+        { q: "ในงานสังสรรค์หรือที่มีคนจำนวนมาก คุณเป็นคนแบบไหน?", options: [{t:"คอยต้อนรับและดูแลความรู้สึกผู้อื่น", s:["Wisteria", "Hydrangea"]}, {t:"เงียบๆ กับกลุ่มเพื่อนสนิท", s:["Tsubaki", "Nanohana"]}, {t:"สร้างพลังงานบวกและความสดใส", s:["Sakura", "Gerbera"]}] },
+        { q: "ถ้าคุณสามารถเลือก 'ของขวัญ' ให้ตัวเองได้หนึ่งอย่าง?", options: [{t:"โอกาสในการเริ่มต้นทำสิ่งใหม่ๆ", s:["Sakura", "Gerbera"]}, {t:"ความสงบและความสุขจากสิ่งเล็กๆ", s:["Nanohana", "Nemophila"]}, {t:"ความรักที่ลึกซึ้งและการได้รับการยอมรับ", s:["Wisteria", "Hydrangea"]}] },
+        { q: "เวลาที่คุณมอง 'อนาคต' คุณนึกถึงสิ่งใดเป็นอันดับแรก?", options: [{t:"ความสำเร็จที่รออยู่ในทุกที่ที่เราไป", s:["Nemophila", "Gerbera"]}, {t:"การเติบโตแบบเรียบง่ายและยั่งยืน", s:["Tsubaki", "Nanohana"]}, {t:"ความหวังที่ไม่มีวันสิ้นสุด", s:["Gerbera", "Sakura"]}] },
+        { q: "หากเปรียบชีวิตเป็น 'ฤดูกาล' คุณชอบช่วงเวลาไหนที่สุด?", options: [{t:"ฤดูใบไม้ผลิ: การเริ่มต้นใหม่", s:["Sakura", "Nanohana", "Wisteria"]}, {t:"ฤดูฝน: ความเย็นฉ่ำ", s:["Hydrangea"]}, {t:"ฤดูหนาว: ความสงบนิ่ง", s:["Tsubaki"]}] }
     ];
 
     let currentStep = 0;
     let scores = { Sakura:0, Wisteria:0, Nemophila:0, Nanohana:0, Hydrangea:0, Gerbera:0, Tsubaki:0 };
 
     function startQuiz() {
-        document.getElementById('start-page').classList.add('hidden');
-        document.getElementById('question-page').classList.remove('hidden');
-        showQuestion();
+        fadeOut('intro-card', () => {
+            document.getElementById('intro-card').classList.add('hidden');
+            document.getElementById('quiz-card').classList.remove('hidden');
+            showQuestion();
+        });
     }
 
     function showQuestion() {
         if (currentStep >= questions.length) return showResult();
+        
         const q = questions[currentStep];
-        document.getElementById('progress-text').innerText = `คำถามที่ ${currentStep + 1} จาก ${questions.length}`;
+        document.getElementById('step-counter').innerText = `ข้อที่ ${currentStep + 1} / ${questions.length}`;
         document.getElementById('question-text').innerText = q.q;
+        document.getElementById('progress-bar').style.width = `${((currentStep + 1) / questions.length) * 100}%`;
+        
         const container = document.getElementById('options-container');
         container.innerHTML = '';
+        
         q.options.forEach(opt => {
             const btn = document.createElement('button');
-            btn.className = 'btn';
+            btn.className = 'option-btn';
             btn.innerText = opt.t;
-            btn.onclick = () => { opt.s.forEach(f => scores[f]++); currentStep++; showQuestion(); };
+            btn.onclick = () => {
+                opt.s.forEach(f => scores[f]++);
+                currentStep++;
+                fadeOut('quiz-card', showQuestion, true);
+            };
             container.appendChild(btn);
         });
     }
 
     function showResult() {
-        document.getElementById('question-page').classList.add('hidden');
-        document.getElementById('result-page').classList.remove('hidden');
         const topFlower = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
         const res = flowers[topFlower];
-        document.getElementById('flower-name').innerText = res.name;
-        document.getElementById('flower-meaning').innerText = res.meaning;
-        document.getElementById('flower-note').innerText = res.note;
-        document.getElementById('flower-img').src = res.img;
-        document.getElementById('flower-video').href = res.video;
+        
+        fadeOut('quiz-card', () => {
+            document.getElementById('quiz-card').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+            
+            document.getElementById('flower-name').innerText = res.name;
+            document.getElementById('flower-meaning').innerText = res.meaning;
+            document.getElementById('flower-note').innerText = res.note;
+            document.getElementById('flower-img').src = res.img;
+            document.getElementById('flower-video').href = res.video;
+        });
+    }
+
+    function fadeOut(id, callback, reEnter = false) {
+        const el = document.getElementById(id);
+        el.classList.add('fade-out');
+        setTimeout(() => {
+            callback();
+            if (reEnter) el.classList.remove('fade-out');
+        }, 400);
     }
 </script>
 
